@@ -1,8 +1,13 @@
 require 'sunspot'
 require File.join(File.dirname(__FILE__), 'rails', 'configuration')
-require File.join(File.dirname(__FILE__), 'rails', 'adapters')
-require File.join(File.dirname(__FILE__), 'rails', 'request_lifecycle')
-require File.join(File.dirname(__FILE__), 'rails', 'searchable')
+
+if defined?(::Rails::Railtie)
+  require File.join(File.dirname(__FILE__), 'rails', 'railtie')
+else
+  require File.join(File.dirname(__FILE__), 'rails', 'adapters')
+  require File.join(File.dirname(__FILE__), 'rails', 'request_lifecycle')
+  require File.join(File.dirname(__FILE__), 'rails', 'searchable')
+end
 
 module Sunspot #:nodoc:
   module Rails #:nodoc:
