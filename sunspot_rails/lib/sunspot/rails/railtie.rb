@@ -1,7 +1,6 @@
 module Sunspot
   module Rails
     class Railtie < ::Rails::Railtie
-      railtie_name :sunspot_rails
 
       initializer 'sunspot_rails.session' do |app|
         Sunspot.session = Sunspot::Rails.build_session
