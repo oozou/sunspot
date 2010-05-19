@@ -34,7 +34,7 @@ module Sunspot #:nodoc:
           value = value.join(', ') if value.respond_to?(:join)
           @select = value
         end
-        
+
         # 
         # Get one ActiveRecord instance out of the database by ID
         #
@@ -68,9 +68,21 @@ module Sunspot #:nodoc:
             :conditions => { @clazz.primary_key => ids.map { |id| id.to_i }}
           ))
         end
-        
+
+        def iterate_all(opts={}, &block)
+          offset = 0
+          batch_size = opts[:batch_size] || 25
+          last_id = opts[:first_id] || 0
+          loop do
+            records = all(:include => opts[:include], :conditions => ["#{@clazz.table_name}.#{@clazz.primary_key} > ?", last_id], :limit => batch_size, :order => @clazz.primary_key)
+            break if records.empty?
+            yield records
+            last_id = records.last.id
+            offset += batch_size
+          end
+        end
+
         private
-        
         def options_for_find
           returning({}) do |options|
             options[:include] = @include unless @include.blank?

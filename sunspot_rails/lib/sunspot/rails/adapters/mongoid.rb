@@ -49,6 +49,17 @@ module Sunspot #:nodoc:
           @clazz.criteria.in(primary_key.to_sym => ids)
         end
 
+        def iterate_all(opts={}, &block)
+          current_page = 1
+          per_page = opts[:batch_size] || 25
+          loop do
+            documents = @clazz.paginate(:page => current_page, :per_page => per_page)
+            break if documents.empty?
+            yield documents
+            current_page += 1
+          end
+        end
+
       end
     end
   end

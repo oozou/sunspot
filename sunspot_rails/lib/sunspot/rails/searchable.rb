@@ -227,18 +227,13 @@ module Sunspot #:nodoc:
           unless options[:batch_size]
             Sunspot.index!(all(:include => options[:include]))
           else
-            offset = 0
+            daa = Sunspot::Adapters::DataAccessor.create(self)
             counter = 1
-            record_count = count
-            last_id = options[:first_id]
-            while(offset < record_count)
+            daa.iterate_all(options) do |rds|
               solr_benchmark options[:batch_size], counter do
-                records = all(:include => options[:include], :conditions => ["#{table_name}.#{primary_key} > ?", last_id], :limit => options[:batch_size], :order => primary_key)
-                Sunspot.index(records)
-                last_id = records.last.id
+                Sunspot.index(rds)
+                Sunspot.commit if options[:batch_commit]
               end
-              Sunspot.commit if options[:batch_commit]
-              offset += options[:batch_size]
               counter += 1
             end
             Sunspot.commit unless options[:batch_commit]
