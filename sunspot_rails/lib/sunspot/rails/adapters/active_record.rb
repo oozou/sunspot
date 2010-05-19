@@ -81,3 +81,7 @@ module Sunspot #:nodoc:
     end
   end
 end
+
+ActiveRecord::Base.send :include, Sunspot::Rails::Searchable
+Sunspot::Adapters::InstanceAdapter.register(Sunspot::Rails::Adapters::ActiveRecordInstanceAdapter, ActiveRecord::Base)
+Sunspot::Adapters::DataAccessor.register(Sunspot::Rails::Adapters::ActiveRecordDataAccessor, ActiveRecord::Base)

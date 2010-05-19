@@ -1,12 +1,16 @@
 require 'sunspot'
 require File.join(File.dirname(__FILE__), 'rails', 'configuration')
+require File.join(File.dirname(__FILE__), 'rails', 'request_lifecycle')
+require File.join(File.dirname(__FILE__), 'rails', 'searchable')
 
 if defined?(::Rails::Railtie)
+  puts "Railtie is defined"
   require File.join(File.dirname(__FILE__), 'rails', 'railtie')
 else
-  require File.join(File.dirname(__FILE__), 'rails', 'adapters')
-  require File.join(File.dirname(__FILE__), 'rails', 'request_lifecycle')
-  require File.join(File.dirname(__FILE__), 'rails', 'searchable')
+  require File.join(File.dirname(__FILE__), 'rails', 'adapters', 'active_record')
+
+  Sunspot.session = Sunspot::Rails.build_session
+  ActionController::Base.module_eval { include(Sunspot::Rails::RequestLifecycle) }
 end
 
 module Sunspot #:nodoc:

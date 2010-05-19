@@ -8,9 +8,9 @@ module Sunspot #:nodoc:
     #
     module Searchable
       class <<self
-        def enable! #:nodoc:
-          ActiveRecord::Base.class_eval do
-            extend(ActsAsMethods) 
+        def included(base) #:nodoc:
+          base.module_eval do
+            extend ActsAsMethods
           end
         end
       end
