@@ -74,7 +74,7 @@ module Sunspot #:nodoc:
           batch_size = opts[:batch_size] || 25
           last_id = opts[:first_id] || 0
           loop do
-            records = all(:include => opts[:include], :conditions => ["#{@clazz.table_name}.#{@clazz.primary_key} > ?", last_id], :limit => batch_size, :order => @clazz.primary_key)
+            records = @clazz.all(:include => opts[:include], :conditions => ["#{@clazz.table_name}.#{@clazz.primary_key} > ?", last_id], :limit => batch_size, :order => @clazz.primary_key)
             break if records.empty?
             yield records
             last_id = records.last.id
