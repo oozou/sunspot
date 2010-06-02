@@ -18,10 +18,13 @@ module Sunspot
         'map.title' => 'title_text',
       }
 
+      data = nil
+
       @fields.each do |f|
         puts f.name.to_s + " " + f.value.to_s
-
+        
         if f.name.to_s.include?("_attachment")
+          data = open(f.value).read
           params['def.fl'] = f.name, # all text extracted goes to text_t (since it is a stored field, for highlighting)
           params['fmap.content'] = f.name
         else
@@ -36,7 +39,7 @@ module Sunspot
       end
 
       solr_message = params
-      pp connection.send('update/extract', solr_message)
+      pp connection.send('update/extract', solr_message, data)
     end
   end
 end
