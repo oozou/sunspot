@@ -22,7 +22,6 @@ module Sunspot
         puts f.name.to_s + " " + f.value.to_s
 
         if f.name.to_s.include?("_attachment")
-          params["resource.name"] = f.value # TIKA-154 workaround
           params["stream.file"] = f.value
           params['def.fl'] = f.name, # all text extracted goes to text_t (since it is a stored field, for highlighting)
           params['fmap.content'] = f.name
