@@ -15,7 +15,6 @@ module Sunspot
       params = {
         :wt => :ruby,
         'idx.attr' => false, # don't index any attributes, unless explicitly mapped
-        'ignore.und.fl' => true, # ignore all undefined fields
         'map.title' => 'title_text',
       }
 
