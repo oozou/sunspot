@@ -33,7 +33,7 @@ module Sunspot
       end
 
       solr_message = params
-      pp connection.send('update/extract', solr_message, data)
+      connection.send('update/extract', solr_message, data)
     end
   end
 end
