@@ -167,7 +167,7 @@ module Sunspot
     # Hash:: Hash of field names to text field objects.
     #
     def attachment_fields_hash
-      @text_fields_hash ||=
+      @attachment_fields_hash ||=
         setups.inject({}) do |hash, setup|
           setup.all_attachment_fields.each do |text_field|
             (hash[text_field.name] ||= Set.new) << text_field
