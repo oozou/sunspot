@@ -43,7 +43,16 @@ module Sunspot
         end
       end
 
-      # 
+      # Added an attachment field, the attachment filename is passed to Solr for
+      # indexing by tiqa
+
+      def attachment(*names)
+        names.each do |name|
+          @setup.add_attachment_field_factory(name)
+        end
+      end
+
+      #
       # Specify a method or block that returns the geographical coordinates
       # associated with the document. The object returned must respond to #first
       # and #last (e.g., a two-element Array); or to #lat and one of #lng, #lon,
