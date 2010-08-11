@@ -1,5 +1,4 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
-require 'pp'
 
 describe "Rich document indexing and search" do
   before :all do
@@ -37,11 +36,6 @@ describe "Rich document indexing and search" do
     Sunspot.index!(@rich_text_post)
     Sunspot.index!(rich_text_post)
     Sunspot.search(RichTextPost) { keywords "test"}.results.length.should > 1
-  end
-
-    it 'finds multiple matches in a single document' do
-    Sunspot.index!(@rich_text_post)
-    Sunspot.search(RichTextPost) { keywords "ipsum"}.results.length.should > 1
   end
 
 end
