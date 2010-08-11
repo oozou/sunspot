@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), 'super_class')
 
 class RichTextPost < SuperClass
   attr_accessor :title, :body, :blog_id, :published_at, :ratings_average,
-                :author_name, :featured, :expire_date, :coordinates, :rich_attachment
+                :author_name, :featured, :expire_date, :rich_attachment
   alias_method :featured?, :featured
 
   def category_ids
@@ -52,7 +52,6 @@ Sunspot.setup(RichTextPost) do
   time :last_indexed_at, :stored => true do
     Time.now
   end
-  coordinates :coordinates
 
   dynamic_string :custom_string, :stored => true
   dynamic_float :custom_float, :multiple => true, :using => :custom_fl
