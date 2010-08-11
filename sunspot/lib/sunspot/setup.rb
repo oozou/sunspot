@@ -261,7 +261,6 @@ module Sunspot
     def all_field_factories
       all_field_factories = []
       all_field_factories.concat(field_factories).concat(text_field_factories).concat(dynamic_field_factories).concat(attachment_field_factories)
-      all_field_factories << @coordinates_field_factory if @coordinates_field_factory
       all_field_factories
     end
 
