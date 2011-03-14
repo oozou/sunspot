@@ -133,17 +133,8 @@ describe 'hits', :type => :search do
     session.search(Post).hits.first.stored(:last_indexed_at).should == time
   end
 
-  it 'should return geo distance' do
-    post = Post.new
-    stub_results(post)
-    connection.response['distances'] = {
-      "Post #{post.id}" => 1.23
-    }
-    session.search(Post).hits.first.distance.should == 1.23
-  end
-
-  it 'should return nil if no geo distance' do
-    stub_results(Post.new)
-    session.search(Post).hits.first.distance.should be_nil
+  it 'should return stored values for multi-valued fields' do
+    stub_full_results('instance' => User.new, 'role_ids_ims' => %w(1 4 5))
+    session.search(User).hits.first.stored(:role_ids).should == [1, 4, 5]
   end
 end

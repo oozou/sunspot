@@ -15,6 +15,11 @@ describe 'ActiveRecord mixin' do
       Sunspot.commit
       Post.search.results.should == [@post]
     end
+
+    it "should not blow up if there's a default scope specifying order" do
+      posts = Array.new(2) { |j| PostWithDefaultScope.create! :title => (10-j).to_s }
+      lambda { PostWithDefaultScope.index(:batch_size => 1) }.should_not raise_error
+    end
   end
 
   describe 'single table inheritence' do
@@ -70,7 +75,7 @@ describe 'ActiveRecord mixin' do
 
   describe 'remove_all_from_index' do
     before :each do
-      @posts = Array.new(10) { Post.create! }.each { |post| Sunspot.index(post) }
+      @posts = Array.new(2) { Post.create! }.each { |post| Sunspot.index(post) }
       Sunspot.commit
       Post.remove_all_from_index
     end
@@ -87,7 +92,7 @@ describe 'ActiveRecord mixin' do
 
   describe 'remove_all_from_index!' do
     before :each do
-      Array.new(10) { Post.create! }.each { |post| Sunspot.index(post) }
+      Array.new(2) { Post.create! }.each { |post| Sunspot.index(post) }
       Sunspot.commit
       Post.remove_all_from_index!
     end
@@ -113,13 +118,6 @@ describe 'ActiveRecord mixin' do
       Post.search do
         with :title, 'Bogus Post'
       end.results.should be_empty
-    end
-    
-    it 'should find ActiveRecord objects with an integer, not a string' do
-      Post.should_receive(:all).with(hash_including(:conditions => { "id" => [@post.id.to_i] })).and_return([@post])
-      Post.search do
-        with :title, 'Test Post'
-      end.results.should == [@post]
     end
     
     it 'should use the include option on the data accessor when specified' do
@@ -285,7 +283,7 @@ describe 'ActiveRecord mixin' do
   describe "reindex()" do
   
     before(:each) do
-      @posts = Array.new(10) { Post.create }
+      @posts = Array.new(2) { Post.create }
     end
 
     describe "when not using batches" do
@@ -303,66 +301,15 @@ describe 'ActiveRecord mixin' do
     end
 
     describe "when using batches" do
-      
-      it "should use the default options" do
-        Post.should_receive(:all).with do |params|
-          params[:limit].should == 500
-          params[:include].should == []
-          params[:conditions].should == ['posts.id > ?', 0]
-          params[:order].should == 'posts.id'
-        end.and_return(@posts)
-        Post.reindex
-      end
-
-      it "should set the conditions using the overridden table attributes" do
-        @posts = Array.new(10) { Author.create }
-        Author.should_receive(:all).with do |params|
-          params[:conditions].should == ['writers.writer_id > ?', 0]
-          params[:order].should == 'writers.writer_id'
-        end.and_return(@posts)
-        Author.reindex
-      end
-
-      it "should count the number of records to index" do
-        Post.should_receive(:count).and_return(10)
-        Post.reindex
-      end
-
-      it "should override the batch_size" do
-        Post.should_receive(:all).with do |params|
-          params[:limit].should == 20
-          @posts
-        end.and_return(@posts)
-        Post.reindex(:batch_size => 20)
-      end
-
-      it "should set the include option" do
-        Post.should_receive(:all).with do |params|
-          params[:include].should == [{:author => :address}]
-          @posts
-        end.and_return(@posts)
-        Post.reindex(:include => [{:author => :address}])
-      end
-      
-      it "should set the include option from the searchable options" do
-        @blogs = Array.new(10) { Blog.create }
-        Blog.should_receive(:all).with do |params|
-          params[:include].should == [{ :posts => :author }, :comments]
-          @blogs
-        end.and_return(@blogs)
-        Blog.reindex
-      end
-
       it "should commit after indexing each batch" do
         Sunspot.should_receive(:commit).twice
-        Post.reindex(:batch_size => 5)
+        Post.reindex(:batch_size => 1)
       end
 
       it "should commit after indexing everything" do
         Sunspot.should_receive(:commit).once
         Post.reindex(:batch_commit => false)
       end
-      
     end
   end
   
