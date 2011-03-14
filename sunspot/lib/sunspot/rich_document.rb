@@ -18,14 +18,14 @@ module Sunspot
 
       data = nil
 
-      @fields.each do |f|   
+      @fields.each do |f|
         if f.name.to_s.include?("_attachment")
-          data = open(f.value).read
+          data = f.value
           params['fmap.content'] = f.name
         else
           param_name = "literal.#{f.name.to_s}"
           params[param_name] = [] unless params.has_key?(param_name)
-          params[param_name] << f.value          
+          params[param_name] << f.value
         end
         if f.attrs[:boost]
           params["boost.#{f.name.to_s}"] = f.attrs[:boost]
