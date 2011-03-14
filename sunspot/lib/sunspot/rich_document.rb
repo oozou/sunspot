@@ -34,6 +34,8 @@ module Sunspot
 
       solr_message = params
       connection.send('update/extract', solr_message, data)
+    rescue
+      retry
     end
   end
 end
