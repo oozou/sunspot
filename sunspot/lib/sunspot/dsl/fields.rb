@@ -46,9 +46,11 @@ module Sunspot
       # Added an attachment field, the attachment filename is passed to Solr for
       # indexing by tiqa
 
-      def attachment(*names)
+      def attachment(*names, &block)
+        options = names.pop if names.last.is_a?(Hash)
+        options = (options ||= {}).merge(:multiple => true)
         names.each do |name|
-          @setup.add_attachment_field_factory(name)
+          @setup.add_attachment_field_factory(name, options)
         end
       end
 
